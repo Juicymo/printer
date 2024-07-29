@@ -1,3 +1,5 @@
 Windows printing.
 
-See http://godoc.org/github.com/alexbrainman/printer for details.
+See https://pkg.go.dev/github.com/Juicymo/printer for details.
+
+Fork of https://github.com/alexbrainman/printer
