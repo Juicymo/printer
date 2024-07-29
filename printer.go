@@ -305,19 +305,14 @@ func (p *Printer) Jobs() ([]JobInfo, error) {
 // DriverInfo returns information about printer p driver.
 func (p *Printer) DriverInfo() (*DriverInfo, error) {
 	var needed uint32
-	b := make([]byte, 1024*10)
-	for {
-		err := GetPrinterDriver(p.h, nil, 8, &b[0], uint32(len(b)), &needed)
-		if err == nil {
-			break
-		}
-		if err != syscall.ERROR_INSUFFICIENT_BUFFER {
-			return nil, err
-		}
-		if needed <= uint32(len(b)) {
-			return nil, err
-		}
-		b = make([]byte, needed)
+	err := GetPrinterDriver(p.h, nil, 8, nil, needed, &needed)
+	if err != syscall.ERROR_INSUFFICIENT_BUFFER {
+		return nil, err
+	}
+	b := make([]byte, needed)
+	err = GetPrinterDriver(p.h, nil, 8, &b[0], needed, &needed)
+	if err != nil {
+		return nil, err
 	}
 	di := (*DRIVER_INFO_8)(unsafe.Pointer(&b[0]))
 	return &DriverInfo{
